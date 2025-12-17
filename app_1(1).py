@@ -13,26 +13,27 @@ def newuser():
     if request.method == 'POST':
         username = request.form.get('username', '')
 
-        # Critères
-        criteres = [
-            (r'.{6,}', "Au moins 6 caractères"),
-            (r'.*[0-9].*', "Au moins 1 chiffre"),
-            (r'.*[A-Z].*', "Au moins 1 majuscule"),
-            (r'.*[a-z].*', "Au moins 1 minuscule"),
-            (r'.*[#%{}@].*', "Au moins 1 caractère spécial parmi #%{}@")
-        ]
+        if re.fullmatch(r'.{6,}', username) is None : 
+            message = "Echec : au moins 6 caractères requis"
 
-        # Vérification
-        erreurs = []
-        for patt, msg in criteres:
-            if re.fullmatch(patt, username) is None and not re.search(patt, username):
-                erreurs.append(msg)
+        else: 
+            if re.fullmatch(r'.*[0-9].*', username) is None : 
+                message = "Echec : au moins 1 nombre requis"
 
-        if not erreurs:
-            message = "Identifiant valide ✅"
-        else:
-            message = "Échec sur : " + ", ".join(erreurs)
+            else: 
+                if re.fullmatch(r'.*[A-Z].*', username) is None : 
+                    message = "Echec : au moins 1 majuscule requis"
 
+                else:
+                    if re.fullmatch(r'.*[a-z].*', username) is None : 
+                        message = "Echec : au moins 1 minuscule requis"
+
+                    else:
+                        if re.fullmatch(r'.*[#%{}@].*', username) is None : 
+                            message = "Echec : au moins avoir l'un des caractères suivant: #%{}@"    
+                        else: 
+                            message = "Identifiant valide"
+                            
     return render_template('newuser.html', message=message)
 
 if __name__ == '__main__':
